@@ -2,9 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import Axios from "axios";
 import LoadingDotsIcon from "./LoadingDotsIcon";
-import Post from "./Post";
 
-function ProfilePosts() {
+function ProfileFollowers() {
   const { username } = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [posts, setPosts] = useState([]);
@@ -13,7 +12,7 @@ function ProfilePosts() {
     const request = Axios.CancelToken.source();
     async function fetchPosts() {
       try {
-        const response = await Axios.get(`/profile/${username}/posts`, {
+        const response = await Axios.get(`/profile/${username}/followers`, {
           cancelToken: request.token,
         });
         setPosts(response.data);
@@ -37,11 +36,19 @@ function ProfilePosts() {
 
   return (
     <div className="list-group">
-      {posts.map((post) => {
-        return <Post noAuthor={true} post={post} key={post._id} />;
+      {posts.map((follower, index) => {
+        return (
+          <Link
+            key={index}
+            to={`/profile/${follower.username}`}
+            className="list-group-item list-group-item-action"
+          >
+            <img className="avatar-tiny" src={follower.avatar} /> {follower.username}
+          </Link>
+        );
       })}
     </div>
   );
 }
 
-export default ProfilePosts;
+export default ProfileFollowers;
